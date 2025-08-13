@@ -1,6 +1,5 @@
 import pandas as pd
 from pathlib import Path
-import numpy as np
 import plotly
 import plotly.graph_objects as go
 import geopandas as gpd
