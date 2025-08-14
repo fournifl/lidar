@@ -2,3 +2,6 @@ pandas
 PyQt5
 geopandas
 plotly
+PyYAML
+matplotlib
+scipy
