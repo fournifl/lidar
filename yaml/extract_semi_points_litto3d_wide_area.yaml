@@ -1,0 +1,9 @@
+f_semi_pts: '/home/florent/Projects/Etretat/litto3d/0495_6965/NHDF-MAR_FRA_0498_6961_2016-2018_L93_RGF93_IGN69/Semis_points_Sol/NHDF-MAR_FRA_0498_6961_PTS_2016-2018_L93_RGF93_IGN69.xyz'
+f_semi_pts_out: '/home/florent/Projects/Etretat/litto3d/0495_6965/NHDF-MAR_FRA_0498_6961_2016-2018_L93_RGF93_IGN69/Semis_points_Sol/NHDF-MAR_FRA_0498_6961_PTS_2016-2018_L93_RGF93_IGN69_selection_wide_area.xyz'
+bbox_xmin_lamb93: 498050
+bbox_xmax_lamb93: 498105
+bbox_ymin_lamb93: 6960155
+bbox_ymax_lamb93: 6960210
+f_selection_area : '/home/florent/Projects/Etretat/Geodesie/selection_area_litto3d_semi_pts_wide_area.gpkg'
+epsg_in: 2154
+epsg_out: 32631

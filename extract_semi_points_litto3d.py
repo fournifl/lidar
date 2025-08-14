@@ -1,8 +1,30 @@
 import pandas as pd
 from pathlib import Path
 import plotly
+import argparse
 import plotly.graph_objects as go
 import geopandas as gpd
+import yaml
+
+def get_params():
+
+    # construct an argument parser
+    parser = argparse.ArgumentParser()
+
+    # add argument to the parser
+    parser.add_argument('config')
+
+    # get arguments
+    args = vars(parser.parse_args())
+    config_file = args['config']
+    with open(config_file, 'r') as yaml_file:
+        params = yaml.safe_load(yaml_file)
+    f_semi_pts = Path(params['f_semi_pts'])
+    f_semi_pts_out = Path(params['f_semi_pts_out'])
+    f_selection_area = Path(params['f_selection_area'])
+    epsg_in = params['epsg_in']
+    epsg_out = params['epsg_out']
+    return f_semi_pts, f_semi_pts_out, f_selection_area, epsg_in, epsg_out
 
 
 def plotly_3d_scatter_plot(semi_pts, dir_plot):
@@ -35,6 +57,7 @@ def plotly_3d_scatter_plot(semi_pts, dir_plot):
         x=semi_pts['x'],
         y=semi_pts['y'],
         z=semi_pts['z'],
+        text=(semi_pts.index + 2).map(str),
         showlegend=False,
         mode='markers',
         marker=dict(size=2, color=semi_pts['z'], colorscale='RdylBu_r', cmin=0,
@@ -42,13 +65,6 @@ def plotly_3d_scatter_plot(semi_pts, dir_plot):
                     opacity=1,
                     line=dict(width=0), colorbar=dict(thickness=20)),
     ))
-    # fig.update_layout(
-    #     scene=dict(
-    #         # xaxis=dict(nticks=5, range=[settings['xmin'], settings['xmax']]),
-    #         # yaxis=dict(nticks=5, range=[settings['ymin'], settings['ymax']]),
-    #         # zaxis=dict(nticks=5, range=[settings['cmin'], settings['cmax']]),
-    #         camera_eye=dict(x=0.9, y=1.1, z=0.5),
-    #     ))
     html_file = 'test2.html'
     plotly.offline.plot(fig, filename=html_file, auto_open=False)
 
@@ -56,25 +72,18 @@ def plotly_3d_scatter_plot(semi_pts, dir_plot):
     return fig
 
 
-# parameters
+# execution parameter
 extract = True
 
-# semi points filepaths in, out
-f_semi_pts = Path(
-    '/home/florent/Projects/Etretat/litto3d/0495_6965/NHDF-MAR_FRA_0498_6961_2016-2018_L93_RGF93_IGN69/Semis_points_Sol/NHDF-MAR_FRA_0498_6961_PTS_2016-2018_L93_RGF93_IGN69.xyz')
-f_semi_pts_out = f_semi_pts.parent.joinpath(f_semi_pts.name.replace('.xyz', '_selection.xyz'))
-
-# epsg in, out
-epsg_in = 2154
-epsg_out = 32631
+# read yaml parameters
+f_semi_pts, f_semi_pts_out, f_selection_area, epsg_in, epsg_out = get_params()
 
 # bbox and selection area
-bbox_xmin = 498068
-bbox_xmax = 498101
-bbox_ymin = 6960164
-bbox_ymax = 6960194
-selection_area_filepath = Path('/home/florent/Projects/Etretat/Geodesie/selection_area_litto3d_semi_pts_test.gpkg')
-selection_area = gpd.read_file(selection_area_filepath)
+bbox_xmin_lamb93 = 498068
+bbox_xmax_lamb93 = 498101
+bbox_ymin_lamb93 = 6960164
+bbox_ymax_lamb93 = 6960194
+selection_area = gpd.read_file(f_selection_area)
 
 # read semi points
 semi_pts = pd.read_csv(f_semi_pts, sep=' ', usecols=['x', 'y', 'z'])
@@ -82,8 +91,8 @@ semi_pts = pd.read_csv(f_semi_pts, sep=' ', usecols=['x', 'y', 'z'])
 # select points inside selection area
 if extract:
 
-    # keep onlly points inside bbox
-    semi_pts_out = semi_pts[(semi_pts['x'].between(bbox_xmin, bbox_xmax)) & (semi_pts['y'].between(bbox_ymin, bbox_ymax))]
+    # keep only points inside bbox_lamb93
+    semi_pts_out = semi_pts[(semi_pts['x'].between(bbox_xmin_lamb93, bbox_xmax_lamb93)) & (semi_pts['y'].between(bbox_ymin_lamb93, bbox_ymax_lamb93))]
 
     # create geodataframe
     semi_pts_out = gpd.GeoDataFrame(
