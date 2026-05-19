@@ -1,0 +1,5 @@
+litto3d_path: '/home/florent/Projects/Etretat/litto3d/'
+roi : ''
+outdir: '/home/florent/Projects/Etretat/litto3d/rasters_gathered/'
+epsg_in: 2154
+epsg_out: 32631
